@@ -1,0 +1,21 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: uv run ruff check .
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: mypy
+        name: mypy
+        entry: uv run mypy sedstat
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: xenon
+        name: xenon (complexity gate)
+        entry: uv run xenon --max-absolute B --max-modules B --max-average A sedstat
+        language: system
+        types: [python]
+        pass_filenames: false
