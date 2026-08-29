@@ -58,3 +58,5 @@ Blott, S.J. & Pye, K. (2001). GRADISTAT: a grain size distribution and statistic
 package for the analysis of unconsolidated sediments.
 *Earth Surface Processes and Landforms*, 26, 1237–1248.
 <https://doi.org/10.1002/esp.261>
+
+Dietze, M., Schulte, P. and Dietze, E. (2022), Application of end-member modelling to grain-size data: Constraints and limitations. Sedimentology, 69: 845-863. https://doi.org/10.1111/sed.12929
