@@ -216,3 +216,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local cache
+.cache/
+*.cache
+.local/
+
+# Editor / IDE local settings
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# AI assistant tooling (local config, cache, and data)
+.claude/*
+!.claude/agents/
+!.claude/skills/
+!.claude/settings.json
+.cursor/
+.windsurf/
+.aider*
+.continue/
+.codeium/
+.copilot/
+CLAUDE.local.md
+.mcp.local.json
