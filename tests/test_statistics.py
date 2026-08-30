@@ -19,6 +19,7 @@ from typing import ClassVar
 
 import numpy as np
 import pytest
+
 from sedstat.core.results import GrainSizeResult
 from sedstat.core.statistics import (
     _cumulative,
@@ -448,6 +449,162 @@ class TestAgainstGRADISTATv91:
         assert self.result.percentiles.p10 == pytest.approx(315.838866, abs=1e-4)
         assert self.result.percentiles.p50 == pytest.approx(561.995432, abs=1e-4)
         assert self.result.percentiles.p90 == pytest.approx(1000.0, abs=1e-4)
+
+
+class TestAgainstGoossens2008AtterbergCylinder:
+    """Sanity cross-check against real Atterberg-cylinder (pipette) field data.
+
+    Goossens (2008) Table 1 (see REFERENCES.md) gives raw grain-size class
+    percentages measured by an Atterberg cylinder -- a pipette-family
+    instrument, same physical principle as ``sedstat.core.stokes`` -- for
+    four real sediment samples (A-D) from Korbeek-Dijle, Belgium.
+
+    The paper does not report the Atterberg cylinder's own individual D50;
+    it only gives a graphical figure (ranked across all 10 instruments
+    tested) and a prose approximation averaged *across all 10 techniques*:
+    "about 35", "around 30", "about 12", and "approximately 9" µm for
+    A-D respectively. This is therefore not an exact-match regression test
+    like TestAgainstGRADISTATv91 above -- there is no published Atterberg-
+    specific reference statistic to check against. Instead:
+
+    1. compute_all()'s D50 is checked against an independent hand linear
+       interpolation of this same table's own cumulative curve (should
+       agree closely, since the classes are only 4-5 µm wide, so the
+       phi-space vs. linear-space interpolation difference is small here).
+    2. The coarse-to-fine ordering A > B > C > D the paper states in prose
+       is checked, since that ordering must hold for any correct
+       interpolation of this data regardless of technique.
+
+    Clay content is deliberately not checked: Goossens' finest class
+    boundary (4-5 µm) is coarser than the clay/silt cutoff (2 µm)
+    compute_fractions() uses, so the whole first class is bucketed into
+    fine_silt regardless of true clay content -- a resolution limit of
+    this dataset, not something this test can validate.
+    """
+
+    # Table 1, Atterberg cylinder rows: (upper class bounds in µm, volume %).
+    # Percentages sum to 100.00 (A, C) or within 0.03 of it (B, D rounding).
+    SEDIMENT_A = (
+        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
+        [
+            1.24,
+            0.93,
+            2.56,
+            4.72,
+            7.00,
+            12.68,
+            15.51,
+            17.14,
+            15.47,
+            11.41,
+            6.41,
+            3.50,
+            1.06,
+            0.18,
+            0.08,
+            0.05,
+            0.03,
+            0.03,
+        ],
+    )
+    SEDIMENT_B = (
+        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
+        [
+            9.36,
+            1.26,
+            2.45,
+            6.13,
+            8.51,
+            12.14,
+            13.51,
+            14.49,
+            12.98,
+            9.52,
+            5.25,
+            3.06,
+            1.29,
+            0.08,
+            0.00,
+            0.00,
+            0.00,
+            0.00,
+        ],
+    )
+    SEDIMENT_C = (
+        [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
+        [
+            17.75,
+            16.06,
+            14.05,
+            12.04,
+            10.00,
+            8.34,
+            6.61,
+            5.12,
+            2.59,
+            1.72,
+            1.37,
+            1.02,
+            0.82,
+            0.73,
+            0.80,
+            0.98,
+        ],
+    )
+    SEDIMENT_D = (
+        [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
+        [
+            24.92,
+            16.29,
+            13.92,
+            11.38,
+            9.18,
+            7.02,
+            5.34,
+            3.80,
+            2.08,
+            1.42,
+            1.06,
+            0.79,
+            0.73,
+            0.59,
+            0.62,
+            0.87,
+        ],
+    )
+
+    @staticmethod
+    def _hand_linear_interp_d50(upper_um: list[float], values: list[float]) -> float:
+        """Independent D50 via linear interpolation directly on Table 1's own
+        cumulative curve, in linear µm space -- not sedstat's phi-space
+        convention -- so this is a genuinely separate calculation, not a
+        copy of the code under test.
+        """
+        cum = np.cumsum(values)
+        idx = int(np.searchsorted(cum, 50.0))
+        if idx == 0:
+            return upper_um[0] * 50.0 / cum[0]
+        lo_um, hi_um = upper_um[idx - 1], upper_um[idx]
+        lo_c, hi_c = cum[idx - 1], cum[idx]
+        return lo_um + (50.0 - lo_c) / (hi_c - lo_c) * (hi_um - lo_um)
+
+    @pytest.mark.parametrize(
+        "sediment",
+        [SEDIMENT_A, SEDIMENT_B, SEDIMENT_C, SEDIMENT_D],
+        ids=["A", "B", "C", "D"],
+    )
+    def test_d50_matches_hand_interpolation_of_table_1(self, sediment):
+        upper_um, values = sediment
+        result = compute_all(upper_um, values)
+        expected = self._hand_linear_interp_d50(upper_um, values)
+        assert result.percentiles.d50 == pytest.approx(expected, rel=0.02)
+
+    def test_coarse_to_fine_ordering_matches_paper(self):
+        d50_a = compute_all(*self.SEDIMENT_A).percentiles.d50
+        d50_b = compute_all(*self.SEDIMENT_B).percentiles.d50
+        d50_c = compute_all(*self.SEDIMENT_C).percentiles.d50
+        d50_d = compute_all(*self.SEDIMENT_D).percentiles.d50
+        assert d50_a > d50_b > d50_c > d50_d
 
 
 class TestComputePercentile:
