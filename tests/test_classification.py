@@ -3,6 +3,7 @@
 import math
 
 import pytest
+
 from sedstat.core.classification import (
     ClassificationScheme,
     Classifier,

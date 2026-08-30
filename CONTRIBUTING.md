@@ -70,11 +70,83 @@ not on how it was produced.
   practices* below, especially "no speculative abstractions": prefer the
   simplest solution that solves the problem over a generated one that
   handles cases which cannot occur here.
+* **AI is well-suited to writing and keeping docstrings up to date** —
+  catching a docstring that's drifted from the signature or behaviour it
+  describes is exactly the kind of easy-to-neglect upkeep AI is good at.
+  Use it for that. But it must produce this project's actual style, not
+  generic filler.
+
+  **Template.** Every docstring follows this shape; sections are included
+  only when they add information the name and type hints don't already
+  give:
+
+  ```python
+  def encode(latitude: float, longitude: float, *, precision: int = 12) -> str:
+      """One-line summary of what this does, not what it's named.
+
+      Args:
+          latitude: What this parameter means, not its type.
+          precision: Only explain non-obvious defaults or constraints.
+
+      Returns:
+          What the return value represents, not just its type.
+
+      Raises:
+          SomeError: Only if this function actually, deliberately raises it.
+
+      Example:
+          Only if the call itself isn't already obvious from the signature.
+      """
+  ```
+
+  **What "AI slop" looks like** — reject a docstring like this on sight,
+  even though every real function in `sedstat.core.classification` looks
+  like the clean version beside it:
+
+  ```python
+  # BAD — filler opener, restates the name, Args duplicates the type hint,
+  # a Raises for an exception the function never raises, a boilerplate
+  # Example that shows nothing the signature didn't already say.
+  def classify_skewness_fw_log(skewness: float) -> str:
+      """
+      This function is used to classify the skewness of a distribution.
+
+      Args:
+          skewness (float): The skewness value to classify.
+
+      Returns:
+          str: The skewness classification as a string.
+
+      Raises:
+          ValueError: If the skewness value is invalid.
+
+      Example:
+          >>> classify_skewness_fw_log(0.05)
+          'Symmetrical'
+      """
+
+  # GOOD — what's actually in the codebase.
+  def classify_skewness_fw_log(skewness: float) -> str:
+      """Skewness class name for a Folk & Ward logarithmic (phi) skewness value."""
+  ```
+
+  **Before committing a generated or edited docstring**, re-read it and
+  cut anything that fails this check:
+  - Does the summary say something the function's name doesn't already say?
+  - Does every `Args:` line add meaning beyond the type hint?
+  - Is every `Raises:` entry an exception this function actually,
+    deliberately raises — not a plausible guess?
+  - Would deleting this sentence lose real information, or just make the
+    docstring shorter?
+
+  If nothing survives that check beyond the one-line summary, that's the
+  correct, finished docstring — stopping there is not under-documenting.
 * Install the pre-commit hooks (`uv run pre-commit install`). They run
-  `ruff`, `mypy`, and the `xenon` complexity gate before each commit, the
-  same checks listed under *Tests*, and catch generated code that is
-  needlessly complex or fails linting/type checks before it ever reaches
-  a pull request.
+  `ruff` (lint and format), `mypy`, the `xenon` complexity gate, `bandit`
+  (security), `vulture` (dead code), and `pylint`'s duplicate-code check
+  before each commit — the same checks listed under *Tests* — and catch
+  generated code that is needlessly complex, insecure, unused, duplicated,
+  or fails linting/type checks before it ever reaches a pull request.
 
 ## Issue management
 
@@ -187,12 +259,18 @@ Run the test suite with:
 uv run pytest tests/ -q
 ```
 
-Also expected to stay clean on any touched code:
+Also expected to stay clean on any touched code (the pre-commit hooks run
+all of these, plus basic file hygiene — trailing whitespace, merge-conflict
+markers, and private-key detection):
 
 ```bash
 uv run ruff check .
+uv run ruff format --check .
 uv run mypy sedstat
 uv run xenon --max-absolute B --max-modules B --max-average A sedstat
+uv run bandit -r sedstat
+uv run vulture sedstat tests --min-confidence 80
+uv run pylint --disable=all --enable=duplicate-code sedstat
 ```
 
 On Linux, PySide6 needs a handful of system Qt libraries even under the

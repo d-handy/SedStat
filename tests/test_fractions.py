@@ -1,6 +1,7 @@
 """Tests for sedstat.core.fractions."""
 
 import pytest
+
 from sedstat.core.classification import ClassificationScheme
 from sedstat.core.fractions import compute_fractions
 

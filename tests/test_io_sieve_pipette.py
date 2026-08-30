@@ -7,8 +7,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from sedstat.core.statistics import compute_all
-from sedstat.core.stokes import stokes_settling_diameter_um
 from sedstat.io.sieve_pipette import (
     PipetteRow,
     SievePipetteRecord,
@@ -20,6 +18,9 @@ from sedstat.io.sieve_pipette import (
     sieve_to_distribution,
     write_sieve_pipette_csv,
 )
+
+from sedstat.core.statistics import compute_all
+from sedstat.core.stokes import stokes_settling_diameter_um
 
 
 def _write_temp_csv(content: str) -> Path:
