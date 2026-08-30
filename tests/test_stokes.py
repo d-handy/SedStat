@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+
 from sedstat.core.stokes import (
     stokes_settling_diameter_um,
     stokes_settling_time_s,
@@ -15,11 +16,13 @@ class TestWaterViscosity:
     """water_viscosity_pa_s() against known reference values and its temperature trend."""
 
     def test_20c_matches_reference(self):
-        # CRC Handbook / NIST reference: ~1.002 mPa*s at 20 C.
+        # Kestin, Sokolov & Wakeham (1978) Table 7: 1002.0 uPa*s at 20 C
+        # (see REFERENCES.md). Code computes 1.0017 mPa*s, 0.03% off.
         assert water_viscosity_pa_s(20.0) == pytest.approx(1.002e-3, rel=1e-3)
 
     def test_25c_matches_reference(self):
-        # CRC Handbook / NIST reference: ~0.890 mPa*s at 25 C.
+        # Kestin, Sokolov & Wakeham (1978) Table 7: 890.2 uPa*s at 25 C
+        # (see REFERENCES.md). Code computes 0.8904 mPa*s, 0.03% off.
         assert water_viscosity_pa_s(25.0) == pytest.approx(0.890e-3, rel=1e-3)
 
     def test_monotonically_decreases_with_temperature(self):
@@ -47,7 +50,11 @@ class TestWaterViscosityValidation:
 
 
 class TestWaterDensity:
-    """water_density_kg_m3() against known reference values, including the 4°C density anomaly."""
+    """water_density_kg_m3() against known reference values, including the 4°C density anomaly.
+
+    Reference values from the Millero & Poisson (1981) / UNESCO (1981)
+    pure-water polynomial the code implements (see REFERENCES.md).
+    """
 
     def test_density_maximum_near_4c(self):
         # Water's known density anomaly: maximum density is near 4 C, not 0 C.
