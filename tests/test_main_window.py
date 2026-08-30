@@ -13,12 +13,13 @@ from pathlib import Path
 import pytest
 from PySide6.QtCore import QObject, QSettings, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox
-from sedstat.core.classification import ClassificationScheme
-from sedstat.core.statistics import compute_all
 from sedstat.gui import main_window as mw_mod
 from sedstat.gui.main_window import MainWindow
 from sedstat.gui.widgets.results_table import SORTING_COL
 from sedstat.io.beckman_coulter import LSRecord
+
+from sedstat.core.classification import ClassificationScheme
+from sedstat.core.statistics import compute_all
 
 BOUNDARIES = [0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0]
 VALUES = [1.0, 2.0, 5.0, 15.0, 30.0, 25.0, 12.0, 7.0, 3.0]
@@ -257,7 +258,7 @@ class TestImportSievePipetteCsv:
         as before; TestPromptOverlapStrategy covers the prompt itself.
         """
 
-        def fake_get_item(parent, title, label, items, current, *args, **kwargs):
+        def fake_get_item(parent, title, _label, items, current, *args, **_kwargs):
             return items[current], True
 
         monkeypatch.setattr(QInputDialog, "getItem", fake_get_item)
@@ -336,7 +337,7 @@ class TestImportSievePipetteCsv:
             _SIEVE_PIPETTE_CSV_HEADER + "S1,sieve,0,5.0,,,,,\n" + "S1,sieve,250,60.0,,,,,\n"
         )
         monkeypatch.setattr(mw_mod.QFileDialog, "getOpenFileName", lambda *a, **k: (str(f), ""))
-        monkeypatch.setattr(window, "_prompt_overlap_strategy", lambda question: None)
+        monkeypatch.setattr(window, "_prompt_overlap_strategy", lambda _question: None)
 
         window._import_sieve_pipette_csv()
 
@@ -350,7 +351,7 @@ class TestImportSievePipetteCsv:
             _SIEVE_PIPETTE_CSV_HEADER + "S1,sieve,0,5.0,,,,,\n" + "S1,sieve,250,60.0,,,,,\n"
         )
         monkeypatch.setattr(mw_mod.QFileDialog, "getOpenFileName", lambda *a, **k: (str(f), ""))
-        monkeypatch.setattr(window, "_prompt_overlap_strategy", lambda question: "truncate")
+        monkeypatch.setattr(window, "_prompt_overlap_strategy", lambda _question: "truncate")
 
         calls = {}
         # _import_sieve_pipette_csv does a lazy `from
@@ -402,7 +403,7 @@ class TestPromptOverlapStrategy:
         window._overlap_strategy = "truncate"
         seen = {}
 
-        def fake_get_item(parent, title, label, items, current, *args, **kwargs):
+        def fake_get_item(parent, title, _label, items, current, *args, **_kwargs):
             seen["current"] = current
             return items[current], True
 

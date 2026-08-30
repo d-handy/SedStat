@@ -7,6 +7,7 @@ from statistics import NormalDist
 
 import numpy as np
 import pytest
+
 from sedstat.core.statistics import compute_all
 
 # ---------------------------------------------------------------------------

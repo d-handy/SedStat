@@ -64,7 +64,7 @@ def compute_fractions(
     bounds = _FRACTION_BOUNDS[scheme]
     totals: dict[str, float] = {name: 0.0 for _, _, name in bounds}
 
-    for ub, val in zip(upper_bounds_um, values):
+    for ub, val in zip(upper_bounds_um, values, strict=True):
         for lo, hi, name in bounds:
             if lo <= ub < hi:
                 totals[name] += float(val)

@@ -5,8 +5,9 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from sedstat.core.classification import ClassificationScheme
 from sedstat.gui.workers import BatchWorker
+
+from sedstat.core.classification import ClassificationScheme
 
 # ---------------------------------------------------------------------------
 # Helpers — minimal synthetic .$av content (mirrors test_io_beckman_coulter.py)
@@ -101,8 +102,9 @@ class TestBatchWorkerSuccess:
         assert progress_calls == [(1, 2), (2, 2)]
 
     def test_result_ready_payload_types(self, qtbot):
-        from sedstat.core.results import GrainSizeResult
         from sedstat.io.beckman_coulter import LSRecord
+
+        from sedstat.core.results import GrainSizeResult
 
         p = _write_temp_av(_make_av_content())
         worker = BatchWorker([p])
