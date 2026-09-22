@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
 from sedstat.io.beckman_coulter import LSRecord, read_ls_file
 
 # ---------------------------------------------------------------------------
@@ -154,6 +155,15 @@ class TestSampleMetadata:
     def test_operator(self):
         assert self.rec.operator == "JD"
 
+    def test_other_fields_in_extra_meta(self):
+        content = (
+            "[#Bindiam]\n2.0\n4.0\n8.0\n[#Binheight]\n40.0\n60.0\n"
+            "[SIsave0]\nGroupID=G1\nSampleID=X7\n"
+        )
+        rec = read_ls_file(_write_temp_av(content))
+        assert rec.extra_meta["SIsave0.SampleID"] == "X7"
+        assert "SIsave0.GroupID" not in rec.extra_meta
+
 
 class TestMissingSIsave:
     """Sample metadata is None when the [SIsave0] section is absent."""
@@ -252,6 +262,41 @@ class TestErrors:
         content = "[#Bindiam]\n2.0\n4.0\n16.0\n8.0\n32.0\n[#Binheight]\n10\n20\n30\n40\n"
         p = _write_temp_av(content)
         with pytest.raises(ValueError, match="strictly increasing"):
+            read_ls_file(p)
+
+    def test_directory_path_raises(self, tmp_path):
+        with pytest.raises(FileNotFoundError):
+            read_ls_file(tmp_path)
+
+    def test_decimal_comma_in_bindiam_raises(self):
+        """A dropped boundary would shift every later bin, so it must raise."""
+        content = "[#Bindiam]\n2.0\n4.0\n8,0\n16.0\n[#Binheight]\n10\n20\n70\n"
+        p = _write_temp_av(content)
+        with pytest.raises(ValueError, match=r"'8,0' in \[#Bindiam\] at line 4"):
+            read_ls_file(p)
+
+    def test_non_numeric_binheight_raises(self):
+        content = "[#Bindiam]\n2.0\n4.0\n8.0\n[#Binheight]\n40\nabc\n"
+        p = _write_temp_av(content)
+        with pytest.raises(ValueError, match=r"'abc' in \[#Binheight\]"):
+            read_ls_file(p)
+
+    def test_nan_binheight_raises(self):
+        content = "[#Bindiam]\n2.0\n4.0\n8.0\n[#Binheight]\n40\nnan\n"
+        p = _write_temp_av(content)
+        with pytest.raises(ValueError, match="'nan'"):
+            read_ls_file(p)
+
+    def test_blank_lines_in_bin_sections_ignored(self):
+        content = "[#Bindiam]\n2.0\n\n4.0\n8.0\n\n[#Binheight]\n\n40\n60\n"
+        rec = read_ls_file(_write_temp_av(content))
+        assert rec.classes_um == [2.0, 4.0, 8.0]
+        assert rec.values == [40.0, 60.0]
+
+    def test_length_mismatch_raises(self):
+        content = "[#Bindiam]\n2.0\n4.0\n8.0\n16.0\n32.0\n64.0\n[#Binheight]\n30\n30\n40\n"
+        p = _write_temp_av(content)
+        with pytest.raises(ValueError, match=r"6 values and .* has 3"):
             read_ls_file(p)
 
 
