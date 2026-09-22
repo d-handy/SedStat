@@ -102,9 +102,8 @@ class TestBatchWorkerSuccess:
         assert progress_calls == [(1, 2), (2, 2)]
 
     def test_result_ready_payload_types(self, qtbot):
-        from sedstat.io.beckman_coulter import LSRecord
-
         from sedstat.core.results import GrainSizeResult
+        from sedstat.io.beckman_coulter import LSRecord
 
         p = _write_temp_av(_make_av_content())
         worker = BatchWorker([p])
