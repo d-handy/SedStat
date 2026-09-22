@@ -51,6 +51,20 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Test-run results and reports
+coverage.json
+coverage.lcov
+lcov.info
+junit*.xml
+report.xml
+test-results/
+test-reports/
+.pytest-basetemp/
+.benchmarks/
+.mutmut-cache
+mutants/
+*.prof
+
 # Translations
 *.mo
 *.pot
@@ -195,9 +209,9 @@ cython_debug/
 .abstra/
 
 # Visual Studio Code
-#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
+#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
 #   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#   and can be added to the global gitignore or merged into this file. However, if you prefer, 
+#   and can be added to the global gitignore or merged into this file. However, if you prefer,
 #   you could uncomment the following to ignore the entire vscode folder
 # .vscode/
 # Temporary file for partial code execution
@@ -227,16 +241,31 @@ __marimo__/
 !.vscode/extensions.json
 .idea/
 
-# AI assistant tooling (local config, cache, and data)
-.claude/*
-!.claude/agents/
-!.claude/skills/
-!.claude/settings.json
+# AI assistant tooling — never versioned (config, instructions, cache, data)
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+.gemini/
+.codex/
 .cursor/
+.cursorrules
+.cursorignore
 .windsurf/
+.windsurfrules
 .aider*
 .continue/
 .codeium/
 .copilot/
-CLAUDE.local.md
+.github/copilot-instructions.md
+.clinerules
+.cline/
+.roo/
+.roomodes
+.kiro/
+.junie/
+.amazonq/
+.tabnine/
+.mcp.json
 .mcp.local.json
