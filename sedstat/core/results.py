@@ -120,12 +120,16 @@ class GrainSizeResult:
     fractions: Fractions
 
     # Textural descriptions (set by classification module)
-    descriptions: dict[str, str] = field(default_factory=dict)
+    descriptions: dict[str, str] = field(default_factory=dict[str, str])
     # Which classification scheme produced the descriptions
     scheme: ClassificationScheme = field(default=ClassificationScheme.GRADISTAT)
 
-    def to_dict(self) -> dict:
-        """Flat dict suitable for a DataFrame row."""
+    def to_dict(self) -> dict[str, float | str]:
+        """Flat dict suitable for a DataFrame row.
+
+        Every value is a float except the ``desc_*`` entries, which carry the
+        classification strings from ``descriptions``.
+        """
         return {
             # Arithmetic
             "arith_mean_um": self.arithmetic.mean,
