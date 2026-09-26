@@ -125,6 +125,7 @@ not on how it was produced.
           'Symmetrical'
       """
 
+
   # GOOD — what's actually in the codebase.
   def classify_skewness_fw_log(skewness: float) -> str:
       """Skewness class name for a Folk & Ward logarithmic (phi) skewness value."""
@@ -197,7 +198,7 @@ is required either.
 * **No speculative abstractions.** Three similar lines are better than a premature helper. Only generalise when there are three or more concrete call sites.
 * **No broad exception handling.** Catch only the specific exception types that can actually occur. Never use bare `except Exception`.
 * **Validate at system boundaries only.** Trust numpy/scipy/Qt guarantees internally. Validate user input and data parsed from external files (`.$av`, CSV).
-* **Methodological decisions are user-configurable, not hardcoded.** A statistical or classification choice that isn't the single obviously-correct answer (a reconciliation strategy, a rounding convention, an interpolation method) needs a discussion first and should end up as a real parameter or setting, not something picked once and hardcoded. 
+* **Methodological decisions are user-configurable, not hardcoded.** A statistical or classification choice that isn't the single obviously-correct answer (a reconciliation strategy, a rounding convention, an interpolation method) needs a discussion first and should end up as a real parameter or setting, not something picked once and hardcoded.
 
 ## Coding style
 
@@ -291,4 +292,4 @@ since they are also called directly as the standalone Python API.
 
 ### Releases
 
-There is no fixed release cadence. 
+There is no fixed release cadence.

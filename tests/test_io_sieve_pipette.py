@@ -7,6 +7,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
+from sedstat.core.statistics import compute_all
+from sedstat.core.stokes import stokes_settling_diameter_um
 from sedstat.io.sieve_pipette import (
     PipetteRow,
     SievePipetteRecord,
@@ -18,9 +21,6 @@ from sedstat.io.sieve_pipette import (
     sieve_to_distribution,
     write_sieve_pipette_csv,
 )
-
-from sedstat.core.statistics import compute_all
-from sedstat.core.stokes import stokes_settling_diameter_um
 
 
 def _write_temp_csv(content: str) -> Path:
@@ -523,6 +523,35 @@ class TestBuildRecordDefensive:
         )
         path = _write_temp_csv(content)
         with pytest.raises(ValueError, match="weight_g"):
+            read_sieve_pipette_csv(path)
+
+    def test_decimal_comma_in_mesh_raises(self):
+        """A comma-decimal cell names its column and row instead of failing raw in float()."""
+        content = (
+            "group_id,type,mesh_um,weight_g,size_um,time_s,depth_cm,temp_c,density_g_cm3\n"
+            "S1,sieve,0,5.0,,,,,\n"
+            'S1,sieve,"63,5",8.5,,,,,\n'
+        )
+        path = _write_temp_csv(content)
+        with pytest.raises(ValueError, match=r"row 3: mesh_um must be a number; got '63,5'"):
+            read_sieve_pipette_csv(path)
+
+    def test_non_numeric_size_um_raises(self):
+        content = (
+            "group_id,type,mesh_um,weight_g,size_um,time_s,depth_cm,temp_c,density_g_cm3\n"
+            "S1,pipette,,1.8,abc,,,,\n"
+        )
+        path = _write_temp_csv(content)
+        with pytest.raises(ValueError, match=r"row 2: size_um must be a number; got 'abc'"):
+            read_sieve_pipette_csv(path)
+
+    def test_negative_weight_raises(self):
+        content = (
+            "group_id,type,mesh_um,weight_g,size_um,time_s,depth_cm,temp_c,density_g_cm3\n"
+            "S1,sieve,0,-5.0,,,,,\n"
+        )
+        path = _write_temp_csv(content)
+        with pytest.raises(ValueError, match="weight_g must not be negative"):
             read_sieve_pipette_csv(path)
 
 

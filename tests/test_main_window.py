@@ -16,10 +16,10 @@ from PySide6.QtWidgets import QInputDialog, QMessageBox
 from sedstat.gui import main_window as mw_mod
 from sedstat.gui.main_window import MainWindow
 from sedstat.gui.widgets.results_table import SORTING_COL
-from sedstat.io.beckman_coulter import LSRecord
 
 from sedstat.core.classification import ClassificationScheme
 from sedstat.core.statistics import compute_all
+from sedstat.io.beckman_coulter import LSRecord
 
 BOUNDARIES = [0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0]
 VALUES = [1.0, 2.0, 5.0, 15.0, 30.0, 25.0, 12.0, 7.0, 3.0]

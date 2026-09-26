@@ -27,10 +27,10 @@ from sedstat.gui.widgets.results_table import (
 from sedstat.gui.widgets.sample_detail import SampleDetailWidget
 from sedstat.gui.widgets.stratigraphic_plot import StratigraphicPlotWidget
 from sedstat.gui.widgets.ternary_plot import TernaryPlotWidget
-from sedstat.io.beckman_coulter import LSRecord
 
 from sedstat.core.classification import ClassificationScheme
 from sedstat.core.statistics import compute_all
+from sedstat.io.beckman_coulter import LSRecord
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
