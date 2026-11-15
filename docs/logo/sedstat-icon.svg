@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 300 340">
+<title>SedStat</title>
+<polygon points="150,12 286,91 286,249 150,328 14,249 14,91" fill="#F3EBDD" stroke="#8A5A2B" stroke-width="20" stroke-linejoin="round"/>
+<polygon points="150,70 52,240 248,240" fill="none" stroke="#8A5A2B" stroke-width="14" stroke-linejoin="round"/>
+<circle cx="112" cy="206" r="13" fill="#1E3550"/>
+<circle cx="140" cy="200" r="13" fill="#1E3550"/>
+<circle cx="122" cy="180" r="13" fill="#1E3550"/>
+<circle cx="170" cy="146" r="13" fill="#F2B90F" stroke="#1E3550" stroke-width="4"/>
+<circle cx="186" cy="172" r="13" fill="#F2B90F" stroke="#1E3550" stroke-width="4"/>
+</svg>
