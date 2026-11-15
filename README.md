@@ -1,5 +1,7 @@
 <a id="top"></a>
 
+# SedStat <img src="docs/logo/sedstat-logo.svg" align="right" height="139" alt="" />
+
 <!-- ABOUT SedStat -->
 ## About SedStat
 
