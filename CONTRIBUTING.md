@@ -221,26 +221,40 @@ is required either.
 
 ## Contribution workflow
 
+### Change types
+
+Branch names and commit messages share one set of types:
+
+| Type | Use for |
+|---|---|
+| `feat` | New functionality |
+| `fix` | Bug fixes |
+| `docs` | Documentation only |
+| `test` | Test-only changes |
+| `chore` | Cleanup, tooling, configuration, dependencies |
+
 ### Branch creation
 
 Branches follow the pattern `<type>/<short-description>`:
 
-* `bug/fix-ternary-label-overlap` for bug fixes
-* `feat/plot-export-dialog` for features
-* `test/sieve-pipette-overlap-strategy` for test-only changes
-* `chore/remove-legacy-classification-table` for cleanup
+* `fix/ternary-label-overlap`
+* `feat/plot-export-dialog`
+* `docs/readme-python-api`
+* `test/sieve-pipette-overlap-strategy`
+* `chore/remove-legacy-classification-table`
 
 ### Commit messages
 
-Write commit messages in the imperative mood, present tense:
+Commit messages start with `<type>: `, followed by a summary in the
+imperative mood, present tense:
 
 ```
-Fix D50 annotation using the wrong class edge in phi mode
+fix: Use coarse class edge for D50 in phi mode
 
-Add overlap_strategy parameter to combine_sieve_pipette
+feat: Add overlap strategy to sieve/pipette merge
 ```
 
-* First line: 50 characters max, no trailing period.
+* First line: 50 characters max including the type, no trailing period.
 * Optional body: explain *why*, not *what*. Reference issue numbers (`Closes #XX`).
 * Do not amend published commits.
 

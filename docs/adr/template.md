@@ -5,8 +5,9 @@
 
 ## Context
 
-What forces the decision: the problem, the constraints, and what the R
-package does. Mention the alternatives that were considered.
+What forces the decision: the problem, the constraints, and what the
+current code or the literature does. Mention the alternatives that were
+considered.
 
 ## Decision
 
