@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QPushButton
-from sedstat.gui.preferences_dialog import PreferencesDialog
 
 from sedstat.core.classification import ClassificationScheme
+from sedstat.gui.preferences_dialog import PreferencesDialog
 
 
 class TestPreferencesDialogConstruction:

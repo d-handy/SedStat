@@ -5,9 +5,8 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from sedstat.gui.workers import BatchWorker
-
 from sedstat.core.classification import ClassificationScheme
+from sedstat.gui.workers import BatchWorker
 
 # ---------------------------------------------------------------------------
 # Helpers — minimal synthetic .$av content (mirrors test_io_beckman_coulter.py)

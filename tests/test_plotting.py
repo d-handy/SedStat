@@ -9,6 +9,7 @@ matplotlib.use("Agg")
 import numpy as np
 import pytest
 from matplotlib.figure import Figure
+
 from sedstat.plotting import (
     PlotStyle,
     plot_cumulative_overlay,
