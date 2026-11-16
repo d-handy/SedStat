@@ -6,6 +6,7 @@ import sys
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QLabel
+
 from sedstat.gui.about_dialog import AboutDialog, _pkg_version
 
 

@@ -14,6 +14,9 @@ from pathlib import Path
 import pytest
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFileDialog
+
+from sedstat.core.classification import ClassificationScheme
+from sedstat.core.statistics import compute_all
 from sedstat.gui.widgets.cumulative_plot import CumulativeOverlayWidget
 from sedstat.gui.widgets.distribution_plot import DistributionPlotWidget
 from sedstat.gui.widgets.results_table import (
@@ -27,9 +30,6 @@ from sedstat.gui.widgets.results_table import (
 from sedstat.gui.widgets.sample_detail import SampleDetailWidget
 from sedstat.gui.widgets.stratigraphic_plot import StratigraphicPlotWidget
 from sedstat.gui.widgets.ternary_plot import TernaryPlotWidget
-
-from sedstat.core.classification import ClassificationScheme
-from sedstat.core.statistics import compute_all
 from sedstat.io.beckman_coulter import LSRecord
 
 # ---------------------------------------------------------------------------

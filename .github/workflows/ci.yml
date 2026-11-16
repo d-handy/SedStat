@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # pytest-qt loads PySide6 at startup; without a display Qt needs this.
+  QT_QPA_PLATFORM: offscreen
+
+jobs:
+  checks:
+    name: Pre-commit checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra gui --dev
+      - run: uv run pre-commit run --all-files --show-diff-on-failure
+
+  tests:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+      - name: Install Qt system libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libgl1 libegl1 libxkbcommon0 libdbus-1-3
+      - run: uv sync --locked --extra gui --dev
+      # Test files of finished modules only. Add a module's test file here
+      # in the same pull request that adds the module.
+      - run: >-
+          uv run pytest -q
+          tests/test_statistics.py
+          tests/test_classification.py
+          tests/test_fractions.py
+          tests/test_stokes.py
+          tests/test_reference_distributions.py
+          tests/test_io_beckman_coulter.py
+          tests/test_io_sieve_pipette.py
+
+  full-suite:
+    name: Full suite including planned modules (informational)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - name: Install Qt system libraries
+        run: sudo apt-get update && sudo apt-get install -y libgl1 libegl1 libxkbcommon0 libdbus-1-3
+      - run: uv sync --locked --extra gui --dev
+      # Expected to fail until sedstat.plotting and sedstat.gui exist.
+      # The step is allowed to fail so the job stays green; the summary
+      # shows which test files still cannot run.
+      - name: Run all tests
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          uv run pytest -q --continue-on-collection-errors 2>&1 | tee pytest.log
+      - name: Write summary
+        if: always()
+        run: |
+          {
+            echo "### Full test suite"
+            echo '```'
+            tail -n 20 pytest.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

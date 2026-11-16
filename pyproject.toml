@@ -57,6 +57,12 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # notation (µm, φ, σ) and prose.
 ignore = ["RUF001", "RUF002", "RUF003"]
 
+[tool.ruff.lint.isort]
+# Without this, ruff classifies sedstat.<sub> as third-party while the
+# subpackage directory does not exist yet, so import order would change
+# each time a module lands.
+known-first-party = ["sedstat"]
+
 [tool.mypy]
 python_version = "3.11"
 
