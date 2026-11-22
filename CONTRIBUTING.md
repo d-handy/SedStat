@@ -37,7 +37,7 @@ At this time, we do not accept:
 ## Ground rules
 
 * Be respectful in all written communication: issues, pull requests, and commit messages.
-* Open an issue before starting significant work so the approach can be agreed on.
+* Every change starts with an issue, so the approach can be agreed on and the branch can reference it.
 * One logical change per pull request. Do not bundle unrelated fixes.
 * All new behaviour must be covered by tests.
 
@@ -235,23 +235,24 @@ Branch names and commit messages share one set of types:
 
 ### Branch creation
 
-Branches follow the pattern `<type>/<short-description>`:
+Branches follow the pattern `<type>/<issue-number>-<short-description>`:
 
-* `fix/ternary-label-overlap`
-* `feat/plot-export-dialog`
-* `docs/readme-python-api`
-* `test/sieve-pipette-overlap-strategy`
-* `chore/remove-legacy-classification-table`
+* `fix/12-ternary-label-overlap`
+* `feat/15-plot-export-dialog`
+* `docs/18-readme-python-api`
+* `test/21-sieve-pipette-overlap-strategy`
+* `chore/24-remove-legacy-classification-table`
 
 ### Commit messages
 
-Commit messages start with `<type>: `, followed by a summary in the
-imperative mood, present tense:
+Commit messages start with `<type>: `, followed by a lowercase summary in
+the imperative mood, present tense
+([Conventional Commits](https://www.conventionalcommits.org/)):
 
 ```
-fix: Use coarse class edge for D50 in phi mode
+fix: use coarse class edge for D50 in phi mode
 
-feat: Add overlap strategy to sieve/pipette merge
+feat: add overlap strategy to sieve/pipette merge
 ```
 
 * First line: 50 characters max including the type, no trailing period.
