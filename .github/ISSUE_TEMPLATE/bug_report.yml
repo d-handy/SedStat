@@ -1,0 +1,14 @@
+name: Bug report
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened, what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: Sample file, CSV snippet, GUI steps or Python snippet.
+    validations:
+      required: true
