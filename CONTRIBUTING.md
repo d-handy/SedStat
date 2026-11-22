@@ -255,16 +255,24 @@ feat: Add overlap strategy to sieve/pipette merge
 ```
 
 * First line: 50 characters max including the type, no trailing period.
-* Optional body: explain *why*, not *what*. Reference issue numbers (`Closes #XX`).
-* Do not amend published commits.
+* Body: explain *why*, not *what*. Reference issue numbers (`Closes #XX`).
+  Optional only for trivial changes.
+* Commit messages are the permanent record of a change: pull requests are
+  squash-merged, and their commit messages end up on `main`.
+* One logical step per commit. Before merging, squash fixup and
+  work-in-progress commits (`git rebase -i`) and push with
+  `--force-with-lease`.
+* Never rewrite history on `main`.
 
 ### Pull requests
 
 * Open against `main`.
-* Title mirrors the commit message style.
-* Description must state: what changed, why, and how it was tested.
-* Link the corresponding issue (`Closes #XX`).
+* Title follows the commit message style. It becomes the summary line on
+  `main` when the pull request has more than one commit.
+* Description: link the issue (`Closes #XX`) and state how the change was
+  tested. What and why belong in the commit messages.
 * At least one approving review is required before merging.
+* Pull requests are squash-merged and the branch is deleted afterwards.
 
 ### Tests
 
