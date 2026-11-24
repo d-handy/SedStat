@@ -245,9 +245,9 @@ Branches follow the pattern `<type>/<issue-number>-<short-description>`:
 
 ### Commit messages
 
-Commit messages start with `<type>: `, followed by a lowercase summary in
-the imperative mood, present tense
-([Conventional Commits](https://www.conventionalcommits.org/)):
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
+`<type>: ` followed by a summary. Write the summary in lowercase, in the
+imperative mood, present tense:
 
 ```
 fix: use coarse class edge for D50 in phi mode
@@ -256,8 +256,9 @@ feat: add overlap strategy to sieve/pipette merge
 ```
 
 * First line: 50 characters max including the type, no trailing period.
-* Body: explain *why*, not *what*. Reference issue numbers (`Closes #XX`).
-  Optional only for trivial changes.
+* Body: explain *why*, not *what*. Optional only for trivial changes.
+* Last line: `Closes #XX` in the commit that completes the issue,
+ `Refs #XX` in all others.
 * Commit messages are the permanent record of a change: pull requests are
   squash-merged, and their commit messages end up on `main`.
 * One logical step per commit. Before merging, squash fixup and
